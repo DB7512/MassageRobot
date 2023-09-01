@@ -7,7 +7,6 @@
 #include "robotcontrol.h"
 USBCAN::USBCAN()
 {
-    qDebug("3");
     stopped = false;
 }
 
@@ -134,16 +133,16 @@ bool USBCAN::startCAN()
     {
         qDebug()<<"start 0 fail.";
         return false;
-    }
-    else
+    } else {
         qDebug()<<"start 0 success.";
+    }
     if(VCI_StartCAN(m_deviceType, m_debicIndex, 1) !=1)
     {
         qDebug()<<"start 1 fail.";
         return false;
-    }
-    else
+    } else {
         qDebug()<<"start 1 success.";
+    }
     return true;
 }
 
@@ -151,30 +150,7 @@ void USBCAN::closeDevice()
 {
     stopped = true;
     VCI_CloseDevice(m_deviceType, m_debicIndex);
-    qDebug("CAN已关闭。\n");
-}
-
-bool USBCAN::receiveData(unsigned int channel)
-{
-    int nDeviceType = 4; /* USBCAN-2A或USBCAN-2C或CANalyst-II */
-    int nDeviceInd = 0; /* 第1个设备 */
-    int nCANInd = channel; /* 第1个通道 */
-    DWORD dwRel;
-    VCI_CAN_OBJ vco[2500];
-    dwRel = VCI_Receive( nDeviceType, nDeviceInd, nCANInd, vco, 2500, 0);
-    if(dwRel > 0)
-    {
-        int aaa;
-        aaa = 111;
-
-        /* 数据处理 */
-    }
-    else if(dwRel == -1)
-    {
-
-        /* USB-CAN设备不存在或USB掉线，可以调用VCI_CloseDevice并重新
-VCI_OpenDevice。如此可以达到USB-CAN设备热插拔的效果。 */
-    }
+    qDebug("CAN已关闭。");
 }
 
 bool USBCAN::initSensor()
@@ -257,8 +233,6 @@ void USBCAN::run()
     int minforce = 0;
     while(!stopped)
     {
-//        qDebug("can run");
-//        unsigned int dwRel = 0;
         DWORD dwRel;
         VCI_CAN_OBJ vco[2500];
         QString str = "";
@@ -267,7 +241,7 @@ void USBCAN::run()
         int force = 0;
         int sum = 0;
         dwRel = VCI_Receive(m_deviceType, m_debicIndex, 0, vco,2500,0);
-//        qDebug()<<"derel"<<dwRel;
+        //qDebug()<<"derel"<<dwRel;
         if(dwRel > 0 && dwRel < 2501) {
             lastavg = avg;
             int num = dwRel;
@@ -277,7 +251,7 @@ void USBCAN::run()
                 dechigh = QVariant(vco[i].Data[5]).toInt();
                 declow = QVariant(vco[i].Data[6]).toInt();
                 force = dechigh*255 + declow;
-//                qDebug()<<"force"<<force;
+                //qDebug()<<"force"<<force;
                 if(force > maxforce && force < threshold) {
                     maxforce = force;
                 }
@@ -290,32 +264,21 @@ void USBCAN::run()
                     sum += force;
                 }
             }
-
             if(num > 2) {
                 avg = (sum - minforce - maxforce) / (num - 2);
             } else {
-//                qDebug()<<"当前周期传感器数据错误！！！";
                 avg = lastavg;
                 maxforce = lastmaxforce;
             }
-//            qDebug()<<"maxforce"<<maxforce;
-//            qDebug()<<"dwRel"<<dwRel<<"avg"<<avg<<"num"<<num<<"maxforce"<<maxforce;
             lastmaxforce = maxforce;
         }else if(dwRel > 2500) {
             qDebug("CAN RECEIVE ERROR！\n");
         }
-//        GetRobotInfInstance()->m_sensormessage = avg/10.0;
-//        qDebug()<<"usbcan"<<GetRobotInfInstance()->m_sensormessage;
-//        GetRobotControlInstance()->m_sensormessage = avg/10.0;
-//        qDebug()<<"usbcan"<<GetRobotControlInstance()->m_sensormessage;
         m_sensorMessage = avg/10.0;
         emit getSensorData(m_sensorMessage);
-//        qDebug()<<"m_sensorMessage"<<m_sensorMessage;
         maxforce = 0;
-//        sleep(20);
         QThread::msleep(5);
     }
-//    stopped = false;
 }
 
 void USBCAN::sleep(int msec)

@@ -21,19 +21,7 @@ public:
     RobotControl *m_robotcontrol;
 
 private slots:
-    void on_pushButton_clicked();
 
-    void on_ConnectButton_clicked();
-
-    void on_DisconnectButton_clicked();
-
-    void on_EnableButton_clicked();
-
-    void on_UnableButton_clicked();
-
-    void on_MassageButton_clicked();
-
-    void on_pushButton_2_clicked();
 
 private:
     Ui::Widget *ui;

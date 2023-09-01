@@ -134,44 +134,37 @@ void TcpServer::SendStatusTransformation(QByteArray &status, RobotStatus &robots
 {
     char pstatus[sizeof(struct RobotStatus)];
     memcpy(pstatus, &robotstatus, sizeof(struct RobotStatus));
-//    char *pstate = pstatus;
     memcpy(status.data(),pstatus,sizeof(pstatus));
-    qDebug("pstatus");
 }
 
 void TcpServer::Connection()
 {
-//    GetRobotControlInstance().ConnectRobot();
+
 }
 
 void TcpServer::Disconnection()
 {
-//    GetRobotControlInstance().DisconnectRobot();
+
 }
 
 void TcpServer::Enable()
 {
-//    GetRobotControlInstance().EnableRobot();
+
 }
 
 void TcpServer::Disable()
 {
-//    GetRobotControlInstance().DisableRobot();
+
 }
 
 void TcpServer::Massage()
 {
-//    GetRobotControlInstance()->SetMassage();
-//    if(GetRobotControlInstance()->m_arm->is_connected()) {
-//        GetRobotControlInstance()->m_massagestate = true;
-//        GetRobotControlInstance()->MassagePerform(GetRobotControlInstance()->m_arm);
-//        GetRobotControlInstance()->RobotMassage();
-//    }
+
 }
 
 void TcpServer::Reset()
 {
-//    GetRobotControlInstance().ResetRobot();
+
 }
 
 void TcpServer::Movel()
@@ -224,9 +217,7 @@ void TcpServer::onSocketReadySend()
     status.append(reinterpret_cast<char *>(&robotstatus), sizeof(RobotStatus));
     char pstatus[sizeof(struct RobotStatus)];
     memcpy(pstatus, &robotstatus, sizeof(struct RobotStatus));
-//    SendStatusTransformation(status,robotstatus);
     int ret = m_tcpsocket->write((char*)&robotstatus,sizeof(robotstatus));
-//    int ret = m_tcpsocket->write(status);
     if(ret == -1) {
         if (m_tcpsocket != nullptr) {
             m_tcpsocket->close();

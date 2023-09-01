@@ -33,22 +33,9 @@ struct Instruction {
 
 //socket通信数据结构体
 struct RobotStatus {
-//    QTcpSocket* tcp_socket;
-//    QTcpServer* tcp_server;
-//    QHostAddress* server_address;
-//    int Port;
     int connect_status;
     int enable_status;
     int massage_status;
-//    RobotStatus(){
-////        tcp_socket = nullptr;
-////        tcp_server = nullptr;
-////        server_address = nullptr;
-////        Port = 0;
-//        connect_status = false;
-//        enable_status = false;
-//        massage_status = false;
-//    }
 };
 
 class TcpServer : public QObject
